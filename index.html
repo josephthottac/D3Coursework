@@ -1,11 +1,93 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
+
 <html>
   <head>
-    <title>D3</title>
-    <script src="https://d3js.org/d3.v5.js"></script>
+    <title>Word Frequency Bubble Chart</title>
+		<script src="https://d3js.org/d3.v5.js"></script>
+    <script src="bubbleChart.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Bebas+Neue|Lato|Oswald|Poppins&display=swap" rel="stylesheet">
+    <style>
+      body {
+        background-color: rgb(32, 20, 70);
+        color: white;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      /* Create two equal columns that sits next to each other */
+      .column {
+        float: left;
+        width: 50%;
+        padding: 10px;
+      }
+      
+      .chart-container {
+        width: 60%;
+        font-family: 'Poppins', sans-serif;
+      }
+      .text {
+        width: 40%;
+        font-family: 'Poppins', sans-serif;
+      }
+
+      .row:after {
+        content: "";
+        display: table;
+        clear: both
+      }
+      </style>
   </head>
   <body>
+    <div class ="row">
+      <!-- This is the div our chart will be injected into -->
+      <div class="chart-container column" style="max-width: 1000px;"></div>
+      <div class="text column">
+        <h1>Word Frequency Bubble Chart</h1>
+        Change Colour: 
+        <button class="colour" data-colour="Orange">Orange - Red</button>
+        <button class="colour" data-colour="Teal">Teal - Purple</button>
+        <button class="colour" data-colour="Grey">Grey - Green</button>
+        <br><br>
+        Change Data:
+        <button class="data" data-name="Trump">Trump's Tweets</button>
+        <button class="data" data-name="Potter">Harry Potter Books</button>
+      </div>
+    </div>
 
+    <script>
+      const potterData = {"children": [{"Name":"Harry",Count:16612}, {"Name":"Ron",Count:5784}, {"Name":"Not",Count:5334}, {"Name":"Hermione",Count:4966}, {"Name":"Up",Count:4360}, {"Name":"All",Count:4347}, {"Name":"From",Count:4123}, {"Name":"Dumbledore",Count:2868}, {"Name":"Me",Count:2867}, {"Name":"Who",Count:2856}, {"Name":"No",Count:2768}, {"Name":"Now",Count:2655}, {"Name":"Their",Count:2599}, {"Name":"One",Count:2544}, {"Name":"Looked",Count:2347}, {"Name":"Down",Count:2328}, {"Name":"When",Count:2328}, {"Name":"Do",Count:2320}, {"Name":"Would",Count:2263}, {"Name":"Did",Count:2248}, {"Name":"By",Count:2215}, {"Name":"Around",Count:2187}, {"Name":"Your",Count:2147}, {"Name":"Got",Count:2083}, {"Name":"Very",Count:2070}, {"Name":"Are",Count:2029}, {"Name":"Professor",Count:2027}, {"Name":"My",Count:1991}, {"Name":"More",Count:1946}, {"Name":"See",Count:1932}, {"Name":"Well",Count:1921}, {"Name":"Again",Count:1866}, {"Name":"Off",Count:1842}, {"Name":"Though",Count:1814}, {"Name":"How",Count:1740}, {"Name":"Think",Count:1740}, {"Name":"Hagrid",Count:1728}, {"Name":"Get",Count:1706}, {"Name":"Still",Count:1696}, {"Name":"Time",Count:1694}, {"Name":"Right",Count:1629}, {"Name":"Looking",Count:1627}, {"Name":"Or",Count:1612}, {"Name":"Eyes",Count:1611}, {"Name":"Wand",Count:1611}, {"Name":"Through",Count:1555}, {"Name":"It's",Count:1550}, {"Name":"Face",Count:1540}, {"Name":"Snape",Count:1540}, {"Name":"Weasley",Count:1485}, {"Name":"Which",Count:1481}, {"Name":"Going",Count:1473}, {"Name":"Before",Count:1462}, {"Name":"Voice",Count:1453}, {"Name":"Look",Count:1445}, {"Name":"Go",Count:1430}, {"Name":"Here",Count:1429}, {"Name":"Than",Count:1393}, {"Name":"Will",Count:1375}, {"Name":"Only",Count:1356}, {"Name":"Room",Count:1350}, {"Name":"Come",Count:1332}, {"Name":"Didn't",Count:1331}, {"Name":"Too",Count:1326}, {"Name":"Head",Count:1321}, {"Name":"Where",Count:1309}, {"Name":"Door",Count:1308}, {"Name":"Can",Count:1302}, {"Name":"Thought",Count:1288}, {"Name":"Mr.",Count:1279}, {"Name":"Harry's",Count:1234}, {"Name":"I'm",Count:1220}, {"Name":"Saw",Count:1219}, {"Name":"Something",Count:1204}, {"Name":"After",Count:1175}, {"Name":"Malfoy",Count:1157}, {"Name":"Behind",Count:1147}, {"Name":"Other",Count:1143}, {"Name":"Never",Count:1139}, {"Name":"Hand",Count:1135}, {"Name":"Seemed",Count:1129}, {"Name":"Way",Count:1129}, {"Name":"Away",Count:1123}, {"Name":"Himself",Count:1112}, {"Name":"Potter",Count:1101}, {"Name":"Asked",Count:1096}, {"Name":"Told",Count:1094}, {"Name":"Turned",Count:1075}, {"Name":"Once",Count:1060}, {"Name":"Last",Count:1049}, {"Name":"Us",Count:1035}, {"Name":"He's",Count:1032}, {"Name":"Much",Count:1032}, {"Name":"Two",Count:1032}, {"Name":"Dark",Count:1028}, {"Name":"Little",Count:1015}, {"Name":"Long",Count:1006}, {"Name":"Sirius",Count:1006}, {"Name":"Why",Count:1006}, {"Name":"Knew",Count:1005}, {"Name":"Even",Count:1002}, {"Name":"Want",Count:1001}, {"Name":"Good",Count:993}, {"Name":"Oh",Count:986}, {"Name":"Voldemort",Count:979}, {"Name":"Tell",Count:970}, {"Name":"First",Count:943}, {"Name":"Some",Count:942}, {"Name":"Any",Count:937}, {"Name":"Made",Count:934}, {"Name":"Heard",Count:933}, {"Name":"People",Count:921}, {"Name":"Left",Count:917}, {"Name":"Really",Count:907}, {"Name":"Yes",Count:903}, {"Name":"Because",Count:892}, {"Name":"Its",Count:889}, {"Name":"Felt",Count:886}, {"Name":"Mrs.",Count:885}, {"Name":"Say",Count:881}, {"Name":"Black",Count:880}, {"Name":"Moment",Count:879}, {"Name":"Fred",Count:876}, {"Name":"Hogwarts",Count:861}, {"Name":"Great",Count:853}, {"Name":"Has",Count:827}, {"Name":"Might",Count:813}, {"Name":"You're",Count:812}, {"Name":"Front",Count:804}, {"Name":"Ever",Count:800}, {"Name":"Came",Count:766}, {"Name":"I've",Count:761}, {"Name":"Toward",Count:760}, {"Name":"That's",Count:756}, {"Name":"Death",Count:755}, {"Name":"Take",Count:749}, {"Name":"Feet",Count:744}, {"Name":"Lupin",Count:742}, {"Name":"Sure",Count:732}, {"Name":"Anything",Count:729}, {"Name":"Took",Count:729}, {"Name":"Make",Count:717}, {"Name":"Trying",Count:717}, {"Name":"George",Count:715}, {"Name":"Next",Count:709}, {"Name":"Yeah",Count:709}, {"Name":"Another",Count:708}, {"Name":"Ginny",Count:704}, {"Name":"Nothing",Count:704}, {"Name":"Three",Count:704}, {"Name":"Let",Count:702}, {"Name":"Open",Count:702}, {"Name":"Old",Count:690}, {"Name":"While",Count:689}, {"Name":"Few",Count:685}, {"Name":"Table",Count:684}, {"Name":"Inside",Count:681}, {"Name":"McGonagall",Count:681}, {"Name":"Went",Count:677}, {"Name":"Neville",Count:670}, {"Name":"Must",Count:667}, {"Name":"Against",Count:656}, {"Name":"Can't",Count:653}, {"Name":"Find",Count:650}, {"Name":"Floor",Count:646}, {"Name":"Large",Count:643}, {"Name":"Put",Count:643}, {"Name":"Own",Count:639}, {"Name":"Under",Count:639}, {"Name":"School",Count:638}, {"Name":"Course",Count:632}, {"Name":"Every",Count:624}, {"Name":"Hall",Count:622}, {"Name":"Thing",Count:617}, {"Name":"Seen",Count:615}, {"Name":"Found",Count:613}, {"Name":"Magic",Count:612}, {"Name":"Gave",Count:607}, {"Name":"Place",Count:603}, {"Name":"Both",Count:600}, {"Name":"Hands",Count:600}, {"Name":"Our",Count:600}, {"Name":"Need",Count:593}, {"Name":"Hear",Count:590}, {"Name":"Stood",Count:590}, {"Name":"Most",Count:585}, {"Name":"Gryffindor",Count:573}]}
+      const trumpData = {"children": [{"Name":"great",Count:3397}, {"Name":"trump",Count:1736}, {"Name":"thank",Count:1451}, {"Name":"just",Count:1448}, {"Name":"people",Count:1399}, {"Name":"obama",Count:1226}, {"Name":"new",Count:1134}, {"Name":"now",Count:1096}, {"Name":"thanks",Count:1064}, {"Name":"big",Count:978}, {"Name":"get",Count:952}, {"Name":"america",Count:928}, {"Name":"time",Count:912}, {"Name":"make",Count:865}, {"Name":"good",Count:840}, {"Name":"country",Count:816}, {"Name":"can",Count:802}, {"Name":"many",Count:790}, {"Name":"president",Count:764}, {"Name":"today",Count:757}, {"Name":"one",Count:727}, {"Name":"never",Count:723}, {"Name":"barackobama",Count:673}, {"Name":"going",Count:671}, {"Name":"hillary",Count:661}, {"Name":"must",Count:633}, {"Name":"much",Count:625}, {"Name":"news",Count:593}, {"Name":"back",Count:580}, {"Name":"last",Count:560}, {"Name":"really",Count:553}, {"Name":"bad",Count:538}, {"Name":"think",Count:538}, {"Name":"china",Count:521}, {"Name":"see",Count:519}, {"Name":"jobs",Count:503}, {"Name":"tonight",Count:493}, {"Name":"job",Count:491}, {"Name":"want",Count:491}, {"Name":"even",Count:488}, {"Name":"night",Count:479}, {"Name":"work",Count:475}, {"Name":"world",Count:451}, {"Name":"win",Count:450}, {"Name":"clinton",Count:449}, {"Name":"deal",Count:448}, {"Name":"obamacare",Count:441}, {"Name":"donald",Count:440}, {"Name":"day",Count:439}, {"Name":"years",Count:439}, {"Name":"best",Count:431}, {"Name":"said",Count:428}, {"Name":"cont",Count:427}, {"Name":"show",Count:424}, {"Name":"trump2016",Count:422}, {"Name":"media",Count:420}, {"Name":"american",Count:420}, {"Name":"way",Count:407}, {"Name":"made",Count:402}, {"Name":"watch",Count:389}, {"Name":"know",Count:387}, {"Name":"vote",Count:385}, {"Name":"first",Count:373}, {"Name":"better",Count:369}, {"Name":"national",Count:365}, {"Name":"fake",Count:363}, {"Name":"hard",Count:359}, {"Name":"democrats",Count:355}, {"Name":"look",Count:350}, {"Name":"election",Count:348}, {"Name":"interview",Count:347}, {"Name":"year",Count:347}, {"Name":"makeamericagreatagain",Count:347}, {"Name":"ever",Count:346}, {"Name":"tax",Count:342}, {"Name":"money",Count:342}, {"Name":"amazing",Count:340}, {"Name":"total",Count:338}, {"Name":"true",Count:338}, {"Name":"need",Count:337}, {"Name":"keep",Count:337}, {"Name":"campaign",Count:335}, {"Name":"take",Count:333}, {"Name":"right",Count:333}, {"Name":"love",Count:333}, {"Name":"state",Count:331}, {"Name":"looking",Count:325}, {"Name":"record",Count:323}, {"Name":"crooked",Count:322}, {"Name":"poll",Count:318}, {"Name":"congratulations",Count:317}, {"Name":"happy",Count:316}, {"Name":"always",Count:315}, {"Name":"golf",Count:314}, {"Name":"tomorrow",Count:307}, {"Name":"done",Count:304}, {"Name":"forward",Count:304}, {"Name":"house",Count:303}, {"Name":"well",Count:302}, {"Name":"trade",Count:302}, {"Name":"another",Count:300}, {"Name":"got",Count:299}, {"Name":"border",Count:296}, {"Name":"nice",Count:293}, {"Name":"000",Count:291}, {"Name":"mittromney",Count:291}, {"Name":"nothing",Count:290}, {"Name":"cnn",Count:289}, {"Name":"stop",Count:287}, {"Name":"foxnews",Count:286}, {"Name":"debate",Count:286}, {"Name":"enjoy",Count:284}, {"Name":"military",Count:280}, {"Name":"republicans",Count:276}, {"Name":"honor",Count:271}, {"Name":"business",Count:271}, {"Name":"wonderful",Count:270}, {"Name":"united",Count:269}, {"Name":"states",Count:267}, {"Name":"give",Count:266}, {"Name":"morning",Count:266}, {"Name":"long",Count:265}, {"Name":"believe",Count:264}, {"Name":"totally",Count:263}, {"Name":"soon",Count:261}, {"Name":"russia",Count:261}, {"Name":"celebapprentice",Count:260}, {"Name":"also",Count:259}, {"Name":"foxandfriends",Count:257}, {"Name":"success",Count:256}, {"Name":"wow",Count:255}, {"Name":"everyone",Count:254}, {"Name":"join",Count:252}, {"Name":"say",Count:248}, {"Name":"republican",Count:247}, {"Name":"remember",Count:247}, {"Name":"strong",Count:246}, {"Name":"north",Count:244}, {"Name":"support",Count:244}, {"Name":"getting",Count:243}, {"Name":"making",Count:240}, {"Name":"york",Count:237}, {"Name":"working",Count:237}, {"Name":"two",Count:237}, {"Name":"fantastic",Count:237}]};
+      let currentColour = 'Teal';
+
+      //Creates initial instance of bubble chart with default values
+      let wordBubble = new BubbleChart({
+        element: document.querySelector('.chart-container'),
+        data: trumpData,
+        colour: currentColour
+      });
+      wordBubble.makeSVG();
+
+      //Remakes bubble chart with new data when a 'data button' is clicked
+      d3.selectAll('button.data').on('click', function(){
+        var buttonData = d3.select(this).text();
+        if (buttonData == "Harry Potter Books") {
+          selectedData = potterData
+        } else if (buttonData == "Trump's Tweets") {
+          selectedData = trumpData
+        }
+        wordBubble = new BubbleChart({
+          element: document.querySelector('.chart-container'),
+          data: selectedData,
+          colour: currentColour
+        });
+        wordBubble.makeSVG();
+      });
+
+      //Uses bubbleChart methods to change colour of bubbles when a 'colour button' is clicked
+      d3.selectAll('button.colour').on('click', function(){
+        currentColour= d3.select(this).text().split(' ')[0];
+        wordBubble.setColour(currentColour);
+      });
+    </script>
   </body>
-  <script src="REPLACE.js"></script>
 </html>
